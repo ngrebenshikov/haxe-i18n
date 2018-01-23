@@ -275,13 +275,20 @@ class I18n {
         if (useLocale != GLOBAL) return;
 
         for (loc in locales) {
+            
             str = Xml.createElement("strings");
             var lookup = lookups.get(loc);
             for (key in strings.keys()) {
                 var item = strings.get(key);
                 var val = lookup.get(key);
-                if (val == null) val = defLookup.get(key);
-                if (val == null) val = item.val;
+                if (val == null) {
+                    Context.warning("I18N: the key " + key + " not found for locale." + loc , Context.currentPos());
+                    val = defLookup.get(key);
+                } 
+                if (val == null) {
+                    Context.warning("I18N: the key " + key + " not found for default locale.", Context.currentPos());
+                    val = item.val;
+                }
                 var id = item.id;
                 var t = Xml.createElement("t");
                 t.set("id", "" + id);
